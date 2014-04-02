@@ -9,8 +9,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.DefaultComboBoxModel;
 
 
@@ -103,7 +105,7 @@ public class comboBox extends JFrame {
 		contentPane.add(lblResultado);
 
 		txt_result = new JTextField();
-		txt_result.setEditable(true);
+		txt_result.setEditable(false);
 		txt_result.setBounds(147, 95, 130, 20);
 		contentPane.add(txt_result);
 		txt_result.setColumns(10);
@@ -113,22 +115,22 @@ public class comboBox extends JFrame {
 	private void calcula(){
 		String a = txt_comp1.getText();
 		String b = txt_comp2.getText();
-		String option = "";
+		String option = (String) cb_opcao.getSelectedItem();
 		
 		
 		if(option.equals("Somar")){
 			int soma = Integer.parseInt(a) + Integer.parseInt(b);
 			txt_result.setText("" + soma);
 		}
-		if(cb_opcao.equals("Subtrair")){
+		if(option.equals("Subtrair")){
 			int sub = Integer.parseInt(a) - Integer.parseInt(b);
 			txt_result.setText(String.valueOf(sub));
 		}
-		if(cb_opcao.equals("Multiplicar")){
+		if(option.equals("Multiplicar")){
 			int mult = Integer.parseInt(a) * Integer.parseInt(b);
 			txt_result.setText(String.valueOf(mult));
 		}
-		if(cb_opcao.equals("Dividir")){
+		if(option.equals("Dividir")){
 			int div = Integer.parseInt(a) / Integer.parseInt(b);
 			txt_result.setText(String.valueOf(div));
 		}
