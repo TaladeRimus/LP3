@@ -13,7 +13,7 @@ import Model.Funcionario;
 public class FuncionarioDAOBD extends DatabaseConnection implements FuncionarioDAO {
 
 	@Override
-	public void inserir(Funcionario funcionario) {
+	public Funcionario inserir(Funcionario funcionario) {
 
 		try {
 
@@ -23,6 +23,7 @@ public class FuncionarioDAOBD extends DatabaseConnection implements FuncionarioD
 			cmd.setString(2, funcionario.getEmail());
 			cmd.setInt(3, 2);
 			cmd.executeUpdate();
+			cadastraLogin(funcionario);
 			
 			closeConnection();
 
@@ -30,6 +31,24 @@ public class FuncionarioDAOBD extends DatabaseConnection implements FuncionarioD
 			Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (SQLException ex) {
 			Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return funcionario;
+
+	}
+
+	private void cadastraLogin(Funcionario funcionario){
+
+		try {
+
+			startConnection("INSERT INTO login ( codFuncionario, usuario, senha ) VALUES ( ?, ?, ?)");
+			cmd.setInt(1, 2);
+			cmd.setString(2, funcionario.getName());
+			cmd.setString(3, funcionario.getSenha());
+			cmd.executeUpdate();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+
+			e.printStackTrace();
 		}
 
 	}
@@ -42,7 +61,7 @@ public class FuncionarioDAOBD extends DatabaseConnection implements FuncionarioD
 			startConnection("DELETE FROM funcionario WHERE nome = ?");
 			cmd.setString(1, funcionario.getName());
 			cmd.executeUpdate();
-			
+
 			closeConnection();
 
 		} catch (ClassNotFoundException | SQLException e) {
@@ -64,7 +83,7 @@ public class FuncionarioDAOBD extends DatabaseConnection implements FuncionarioD
 			cmd.setString(1, funcionario.getName());
 			cmd.setString(2, funcionario.getName());
 			cmd.executeUpdate();
-			
+
 			closeConnection();
 
 		} catch (ClassNotFoundException | SQLException e) {
@@ -77,66 +96,67 @@ public class FuncionarioDAOBD extends DatabaseConnection implements FuncionarioD
 
 	@Override
 	public List<Funcionario> getTodosFuncionarios() {
-		 List<Funcionario> funcionario = new ArrayList<>();
+		List<Funcionario> funcionario = new ArrayList<>();
 
-			
-			try {
-				
-				startConnection("SELECT * FROM FUNCIONARIO");
-				ResultSet resultado = cmd.executeQuery();
-				
-				while (resultado.next()) {
-					
-				    Funcionario f = new Funcionario(
-	                        resultado.getString("NOME"),
-	                        resultado.getString("EMAIL"),
-	                        resultado.getInt("CODPERMISSAO"));
-	                        
-					funcionario.add(f);
-					
-				}
-				
-				closeConnection();
-				
-			} catch (ClassNotFoundException | SQLException e) {
-				
-				Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, e);
-	        
+
+		try {
+
+			startConnection("SELECT * FROM FUNCIONARIO");
+			ResultSet resultado = cmd.executeQuery();
+
+			while (resultado.next()) {
+
+				Funcionario f = new Funcionario(
+						resultado.getString("NOME"),
+						resultado.getString("EMAIL"),
+						resultado.getInt("IDFUNCIONARIO"));
+
+				funcionario.add(f);
+
 			}
-	        
-	        return (funcionario);
+
+			closeConnection();
+
+		} catch (ClassNotFoundException | SQLException e) {
+
+			Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, e);
+
+		}
+
+		return (funcionario);
 	}
 
 	@Override
 	public List<Funcionario> getFuncionariosBuscandoPorNome(String nome) {
 
-		   List<Funcionario> listaFuncionario = new ArrayList<>();
-	        try {
+		List<Funcionario> listaFuncionario = new ArrayList<>();
+		try {
 
-	            startConnection("SELECT * FROM FUNCIONARIO WHERE NOME LIKE ?");
-	            cmd.setString(1, "%" + nome + "%");
-	            ResultSet resultado = cmd.executeQuery();
-	            
-	            while (resultado.next()) {
-	            	
-	                Funcionario f = new Funcionario(
-	                		  resultado.getString("NOME"),
-	                          resultado.getString("EMAIL"),
-	                          resultado.getInt("CODPERMISSAO"));
-	                
-	                listaFuncionario.add(f);
-	                
-	            }
-	            
-	            closeConnection();
-	            
-	        } catch (ClassNotFoundException | SQLException ex) {
-	        	
-	            Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, ex);
-	            
-	        }
-	        
-	        return (listaFuncionario);
+			startConnection("SELECT * FROM FUNCIONARIO WHERE NOME LIKE ?");
+			cmd.setString(1, "%" + nome + "%");
+			ResultSet resultado = cmd.executeQuery();
+
+			while (resultado.next()) {
+
+				Funcionario f = new Funcionario(
+						resultado.getString("NOME"),
+						resultado.getString("EMAIL"),
+						resultado.getString("SENHA"),
+						resultado.getInt("IDFUNCIONARIO"));
+
+				listaFuncionario.add(f);
+
+			}
+
+			closeConnection();
+
+		} catch (ClassNotFoundException | SQLException ex) {
+
+			Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, ex);
+
+		}
+
+		return (listaFuncionario);
 	}
 
 }

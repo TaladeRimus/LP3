@@ -2,19 +2,34 @@ package Model;
 
 public class Funcionario {
 	
-	String name, email;
-	int codPermissao;
+	String name, email, senha;
+	int id;
 	
-	public Funcionario(String name, String email, int codPermissao){
+	public Funcionario(String name, String email, String senha, int id){
 		
 		this.name = name;
 		this.email = email;
-		this.codPermissao = codPermissao;
+		this.senha = senha;
+		this.id = id;
 		
 	}
 	
 	
+	public Funcionario() {
 	
+	}
+
+
+	public Funcionario(String name, String email, int id) {
+
+		this.name = name;
+		this.email = email;
+		this.id = id;
+		
+		
+	}
+
+
 	public String getName() {
 		return name;
 	}
@@ -31,16 +46,22 @@ public class Funcionario {
 		this.email = email;
 	}
 
-	public int getCodPermissao() {
-		return codPermissao;
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public int getId() {
+		return id;
 	}
 
 
-
-	public void setCodPermissao(int codPermissao) {
-		this.codPermissao = codPermissao;
+	public void setId(int id) {
+		this.id = id;
 	}
-
 
 
 	@Override

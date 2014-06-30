@@ -17,32 +17,19 @@ import Model.Funcionario;
 public class AddFuncionario extends JFrame {
 
 	
-	Funcionario f = new Funcionario(null, null, 2);
+	Funcionario f = new Funcionario(null, null, null, 0);
 	FuncionarioDAOBD func = new FuncionarioDAOBD(); 
 	private JPanel contentPane;
 	private JTextField txt_nome;
 	private JTextField txt_email;
+	private JTextField txt_senha;
 
-	/**
-	 * Launch the application.
-	 */
-	public void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AddFuncionario frame = new AddFuncionario();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public AddFuncionario() {
+		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 200, 200);
 		contentPane = new JPanel();
@@ -74,17 +61,26 @@ public class AddFuncionario extends JFrame {
 
 				insert();
 
-
 			}
 		});
-		btnCategoria.setBounds(37, 113, 97, 23);
+		btnCategoria.setBounds(39, 128, 97, 23);
 		contentPane.add(btnCategoria);
+		
+		JLabel lblSenha = new JLabel("Senha : ");
+		lblSenha.setBounds(10, 103, 46, 14);
+		contentPane.add(lblSenha);
+		
+		txt_senha = new JTextField();
+		txt_senha.setBounds(66, 99, 86, 20);
+		contentPane.add(txt_senha);
+		txt_senha.setColumns(10);
 	}
 
 	private void insert(){
 
 		f.setName(txt_nome.getText());
 		f.setEmail(txt_email.getText());
+		f.setSenha(txt_senha.getText());
 
 		func.inserir(f);
 

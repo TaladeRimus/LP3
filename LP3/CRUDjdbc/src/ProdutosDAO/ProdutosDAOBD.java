@@ -12,17 +12,20 @@ import FuncionarioDAO.FuncionarioDAOBD;
 import Model.Produtos;
 
 public class ProdutosDAOBD extends DatabaseConnection implements ProdutosDAO {
+	
+	
 
 	@Override
-	public void inserir(Produtos produtos) {
+	public Produtos inserir(Produtos produtos) {
 		
 		try {
 
-			startConnection("INSERT INTO produto (nome, categoria, preco)  VALUES (?,?,?)");
+			startConnection("INSERT INTO produto (nome, categoria, preco, qtd)  VALUES (?,?,?,?)");
 
 			cmd.setString(1, produtos.getNome());
 			cmd.setString(2, produtos.getCategoria());
 			cmd.setDouble(3, produtos.getPreco());
+			cmd.setInt(4, produtos.getQtd());
 			cmd.executeUpdate();
 			
 			closeConnection();
@@ -32,6 +35,7 @@ public class ProdutosDAOBD extends DatabaseConnection implements ProdutosDAO {
 		} catch (SQLException ex) {
 			Logger.getLogger(FuncionarioDAOBD.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		return produtos;
 
 		
 	}
@@ -85,7 +89,7 @@ public class ProdutosDAOBD extends DatabaseConnection implements ProdutosDAO {
 			
 			try {
 				
-				startConnection("SELECT * FROM PRODUTOS");
+				startConnection("SELECT * FROM PRODUTO");
 				ResultSet resultado = cmd.executeQuery();
 				
 				while (resultado.next()) {
@@ -93,7 +97,9 @@ public class ProdutosDAOBD extends DatabaseConnection implements ProdutosDAO {
 				    Produtos p = new Produtos(
 	                        resultado.getString("NOME"),
 	                        resultado.getString("CATEGORIA"),
-	                        resultado.getInt("PRECO"));
+	                        resultado.getInt("PRECO"),
+	                        resultado.getInt("IDPRODUTO"),
+	                        resultado.getInt("QTD"));
 	                        
 					produtos.add(p);
 					
@@ -111,14 +117,14 @@ public class ProdutosDAOBD extends DatabaseConnection implements ProdutosDAO {
 	}
 
 	@Override
-	public List<Produtos> getProdutosBuscandoPorNome(String nome) {
+	public List<Produtos> getProdutosBuscandoPorCategoria(String categoria) {
 		
 		List<Produtos> listaProdutos = new ArrayList<>();
 		
         try {
 
-            startConnection("SELECT * FROM PRODUTOS WHERE NOME LIKE ?");
-            cmd.setString(1, "%" + nome + "%");
+            startConnection("SELECT * FROM PRODUTO WHERE CATEGORIA LIKE ?");
+            cmd.setString(1, categoria);
             ResultSet resultado = cmd.executeQuery();
             
             while (resultado.next()) {
@@ -126,7 +132,9 @@ public class ProdutosDAOBD extends DatabaseConnection implements ProdutosDAO {
                 Produtos p = new Produtos(
                 		  resultado.getString("NOME"),
                           resultado.getString("CATEGORIA"),
-                          resultado.getInt("PRECO"));
+                          resultado.getInt("PRECO"),
+                          resultado.getInt("IDPRODUTO"),
+                          resultado.getInt("QTD"));
                 
                 listaProdutos.add(p);
                 

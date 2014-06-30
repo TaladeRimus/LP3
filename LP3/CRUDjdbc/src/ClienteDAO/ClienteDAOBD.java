@@ -9,7 +9,10 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 import Database.DatabaseConnection;
+import Menu.MenuCliente;
 import Model.Cliente;
 
 public class ClienteDAOBD extends DatabaseConnection implements ClienteDAO {
@@ -18,40 +21,80 @@ public class ClienteDAOBD extends DatabaseConnection implements ClienteDAO {
 	static Scanner sc = new Scanner(System.in);
 
 	@Override
-	public void inserir(Cliente cliente) {
+	public Cliente inserir(Cliente cliente) {
 
 		try {
 
-			startConnection("INSERT INTO cliente (nome, email, codPermissao)  VALUES (?,?,?)");
+			startConnection("INSERT INTO cliente (nome, email, saldo)  VALUES (?,?,?)");
 
 			cmd.setString(1, cliente.getName());
 			cmd.setString(2, cliente.getEmail());
-			cmd.setInt(3, 1);
+			cmd.setDouble(3, cliente.getSaldo());
 			cmd.executeUpdate();
+			cadastraLogin(cliente);
+
 
 		} catch (ClassNotFoundException ex) {
 			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (SQLException ex) {
 			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		return cliente;
 
 	}
+	
 
-	@Override
-	public void remover(Cliente cliente) {
-		
+	private void cadastraLogin(Cliente cliente){
+
 		try {
 			
-			startConnection("DELETE FROM cliente WHERE nome = ?");
+			startConnection("INSERT INTO login ( codCliente, usuario, senha ) VALUES ( ?, ?, ?)");
+			cmd.setInt(1, 1);
+			cmd.setString(2, cliente.getName());
+			cmd.setString(3, cliente.getSenha());
+			cmd.executeUpdate();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+		
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void removerLogin(Cliente cliente){
+		
+		try {
+		
+			startConnection("DELETE FROM login WHERE usuario = ?");
 			cmd.setString(1, cliente.getName());
 			cmd.executeUpdate();
 			
 		} catch (ClassNotFoundException | SQLException e) {
 
-			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, e);
+			e.printStackTrace();
 		
 		}
 		
+	}
+
+	
+
+	@Override
+	public void remover(Cliente cliente) {
+
+		try {
+
+			startConnection("DELETE FROM cliente WHERE nome = ?");
+			cmd.setString(1, cliente.getName());
+			cmd.executeUpdate();
+			removerLogin(cliente);
+			
+		} catch (ClassNotFoundException | SQLException e) {
+
+			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, e);
+
+		}
+
 
 	}
 
@@ -63,86 +106,92 @@ public class ClienteDAOBD extends DatabaseConnection implements ClienteDAO {
 	 */
 	@Override
 	public void atualizar(Cliente cliente) {
-		
+
 		try {
-			
+
 			startConnection("UPDATE cliente SET nome = ? WHERE nome = ?");
-			cmd.setString(1, cliente.getName());
+			String newName = JOptionPane.showInputDialog("Digite o novo nome : ");
+			cmd.setString(1, newName);
 			cmd.setString(2, cliente.getName());
 			cmd.executeUpdate();
 			
-		} catch (ClassNotFoundException | SQLException e) {
+			cliente.setName(newName);
 			
+
+		} catch (ClassNotFoundException | SQLException e) {
+
 			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, e);
-		
+
 		}
-		
+
 	}
 
 	@Override
 	public List<Cliente> getTodosClientes() {
-		
-        List<Cliente> cliente = new ArrayList<>();
 
-		
+		List<Cliente> cliente = new ArrayList<>();
+
+
 		try {
-			
+
 			startConnection("SELECT * FROM CLIENTE");
 			ResultSet resultado = cmd.executeQuery();
-			
+
 			while (resultado.next()) {
-				
-			    Cliente c = new Cliente(
-                        resultado.getString("NOME"),
-                        resultado.getString("EMAIL"),
-                        resultado.getInt("ID"));
-                        
+
+				Cliente c = new Cliente(
+						resultado.getString("NOME"),
+						resultado.getString("EMAIL"),
+						resultado.getDouble("SALDO"),
+						resultado.getInt("IDCLIENTE"));
+
 				cliente.add(c);
-				
+
 			}
-			
+
 			closeConnection();
-			
+
 		} catch (ClassNotFoundException | SQLException e) {
-			
+
 			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, e);
-        
+
 		}
-        
-        return (cliente);
+
+		return (cliente);
 	}
-	
-	
+
+
 
 	@Override
 	public List<Cliente> getClientesBuscandoPorNome(String nome) {
-		
-		   List<Cliente> listaCliente = new ArrayList<>();
-	        try {
 
-	            startConnection("SELECT * FROM CLIENTE WHERE NOME LIKE ?");
-	            cmd.setString(1, "%" + nome + "%");
-	            ResultSet resultado = cmd.executeQuery();
-	            
-	            while (resultado.next()) {
-	                Cliente c = new Cliente(
-	                		  resultado.getString("NOME"),
-	                          resultado.getString("EMAIL"),
-	                          resultado.getInt("ID"));
-	                
-	                listaCliente.add(c);
-	                
-	            }
-	            
-	            closeConnection();
-	            
-	        } catch (ClassNotFoundException | SQLException ex) {
-	            Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, ex);
-	        }
-	        return (listaCliente);
-	    }
+		List<Cliente> listaCliente = new ArrayList<>();
+		try {
 
-	
+			startConnection("SELECT * FROM CLIENTE WHERE NOME LIKE ?");
+			cmd.setString(1, "%" + nome + "%");
+			ResultSet resultado = cmd.executeQuery();
+
+			while (resultado.next()) {
+				Cliente c = new Cliente(
+						resultado.getString("NOME"),
+						resultado.getString("EMAIL"),
+						resultado.getDouble("SALDO"),
+						resultado.getInt("IDCLIENTE"));
+
+				listaCliente.add(c);
+
+			}
+
+			closeConnection();
+
+		} catch (ClassNotFoundException | SQLException ex) {
+			Logger.getLogger(ClienteDAOBD.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return (listaCliente);
 	}
+
+
+}
 
 

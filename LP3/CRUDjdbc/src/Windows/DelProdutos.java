@@ -3,6 +3,9 @@ package Windows;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,38 +14,33 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import Database.DatabaseConnection;
 import Model.Produtos;
+import Model.Venda;
 import ProdutosDAO.ProdutosDAOBD;
+import VendaDAO.VendaDAOBD;
 
 public class DelProdutos extends JFrame {
 
 	
-	Produtos p = new Produtos(null, null, 0);
+	Produtos p = new Produtos();
 	ProdutosDAOBD pDAOBD = new ProdutosDAOBD();
+	VendaDAOBD vDAOBD = new VendaDAOBD();
+	Venda v = new Venda();
+	DatabaseConnection db = new DatabaseConnection();
+	
+	private PreparedStatement cmd;
+	private ResultSet result;
 	
 	private JPanel contentPane;
 	private JTextField txt_nome;
 
-	/**
-	 * Launch the application.
-	 */
-	public void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DelProdutos frame = new DelProdutos();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public DelProdutos() {
+		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 200, 200);
 		contentPane = new JPanel();
@@ -75,9 +73,39 @@ public class DelProdutos extends JFrame {
 	private void delete(){
 		
 		p.setNome(txt_nome.getText());
+		v.setIdProd(retornaIdProduto());
 		
+		vDAOBD.removeVenda(v);
 		pDAOBD.remover(p);
 		
+	}
+	
+	private int retornaIdProduto(){
+		
+		p.setNome(txt_nome.getText());
+	
+			
+			try {
+				cmd = db.startConnectionPS("SELECT * FROM PRODUTO WHERE nome = " + "'" + p.getNome() + "'");
+				
+				result = cmd.executeQuery();
+				
+				while(result.next()){
+					
+					p.setNome(result.getString("NOME"));
+					p.setId(result.getInt("IDPRODUTO"));
+					
+				}
+			} catch (ClassNotFoundException | SQLException e) {
+				
+				e.printStackTrace();
+				
+			}
+			
+			
+
+		
+		return p.getId();
 		
 	}
 	

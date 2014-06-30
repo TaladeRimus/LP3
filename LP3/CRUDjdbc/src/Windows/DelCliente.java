@@ -12,36 +12,23 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import ClienteDAO.ClienteDAOBD;
+import Menu.LogIn;
 import Model.Cliente;
 
 public class DelCliente extends JFrame {
 
 	
-	Cliente c = new Cliente(null, null, 1);
+	Cliente c = new Cliente(null, null, null, 0, 0);
 	ClienteDAOBD cDAOBD = new ClienteDAOBD();
 	private JPanel contentPane;
 	private JTextField txt_nome;
 
-	/**
-	 * Launch the application.
-	 */
-	public void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DelCliente frame = new DelCliente();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public DelCliente() {
+		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 200, 200);
 		contentPane = new JPanel();
@@ -79,5 +66,8 @@ public class DelCliente extends JFrame {
 		
 		cDAOBD.remover(c);
 		
+		
 	}
+	
+	
 }

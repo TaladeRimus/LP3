@@ -16,32 +16,18 @@ import Model.Funcionario;
 
 public class DelFuncionario extends JFrame {
 
-	Funcionario f = new Funcionario(null, null, 2);
+	Funcionario f = new Funcionario(null, null, null, 0);
 	FuncionarioDAOBD fDAOBD = new FuncionarioDAOBD();
 	
 	private JPanel contentPane;
 	private JTextField txt_nome;
 
-	/**
-	 * Launch the application.
-	 */
-	public void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DelFuncionario frame = new DelFuncionario();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public DelFuncionario() {
+		setVisible(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 200, 200);
 		contentPane = new JPanel();

@@ -5,13 +5,20 @@ public class Produtos {
 	
 	String nome, categoria;
 	double preco;
+	int id, qtd;
 	
-	public Produtos(String nome, String categoria, double preco){
+	public Produtos(String nome, String categoria, double preco, int id, int qtd){
 		
 		this.nome = nome;
 		this.categoria = categoria;
 		this.preco = preco;
+		this.id = id;
+		this.qtd = qtd;
 		
+	}
+
+	public Produtos() {
+
 	}
 
 	public String getNome() {
@@ -37,6 +44,23 @@ public class Produtos {
 	public void setPreco(double d) {
 		this.preco = d;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getQtd() {
+		return qtd;
+	}
+
+	public void setQtd(int qtd) {
+		this.qtd = qtd;
+	}
+	
 	
 	
 	

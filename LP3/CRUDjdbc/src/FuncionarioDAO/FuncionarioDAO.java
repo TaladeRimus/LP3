@@ -6,7 +6,7 @@ import Model.Funcionario;
 
 public interface FuncionarioDAO {
 
-	public void inserir(Funcionario funcionario);
+	public Funcionario inserir(Funcionario funcionario);
 	public void remover(Funcionario funcionario);
 	public void atualizar(Funcionario funcionario);
 	public List<Funcionario> getTodosFuncionarios();
